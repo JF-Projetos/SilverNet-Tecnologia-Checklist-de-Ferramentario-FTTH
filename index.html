@@ -518,6 +518,125 @@ input[type=file] { display: none; }
   gap: 8px;
 }
 .btn-pdf:hover { background: linear-gradient(135deg, #1E4070, #009BB5); }
+.btn-tg {
+  flex: 1;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #0088cc, #229ED9);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.btn-tg:hover { background: linear-gradient(135deg, #006fa8, #0088cc); }
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(11,30,61,0.78);
+  z-index: 998;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.show { display: flex; }
+.modal-box {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+}
+.modal-hdr {
+  background: linear-gradient(135deg, #0088cc, #229ED9);
+  color: white;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.modal-hdr-icon { font-size: 24px; }
+.modal-hdr-title { font-size: 15px; font-weight: 700; text-transform: uppercase; }
+.modal-hdr-sub { font-size: 10px; color: rgba(255,255,255,0.55); margin-top: 1px; text-transform: uppercase; }
+.modal-close {
+  margin-left: auto;
+  background: rgba(255,255,255,0.15);
+  border: none; color: white;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  font-size: 15px;
+  cursor: pointer;
+  font-weight: 700;
+  line-height: 1;
+}
+.modal-body { padding: 18px; }
+.modal-info {
+  background: #EEF2F8;
+  border-radius: 8px;
+  padding: 10px 13px;
+  font-size: 11.5px;
+  color: #4A6280;
+  margin-bottom: 16px;
+  line-height: 1.55;
+  text-transform: uppercase;
+}
+.modal-info strong { color: #0B1E3D; }
+.modal-step { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 11px; }
+.step-num {
+  width: 24px; height: 24px;
+  background: #0088cc;
+  color: white;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.step-txt { font-size: 11.5px; color: #4A6280; line-height: 1.5; text-transform: uppercase; }
+.step-txt strong { color: #0B1E3D; }
+.modal-divider {
+  text-align: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #8FA3BF;
+  margin: 14px 0 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.modal-divider::before,.modal-divider::after { content:''; flex:1; height:1px; background:#D5DFF0; }
+.modal-btns { display: flex; flex-direction: column; gap: 9px; }
+.mbtn {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+  text-transform: uppercase;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  width: 100%;
+}
+.mbtn-dl  { background: linear-gradient(135deg, #0B1E3D, #1E4070); color: white; }
+.mbtn-dl:hover { background: linear-gradient(135deg, #1E4070, #009BB5); }
+.mbtn-tg  { background: linear-gradient(135deg, #0088cc, #229ED9); color: white; }
+.mbtn-tg:hover { background: linear-gradient(135deg, #006fa8, #0088cc); }
+.mbtn-wpp { background: linear-gradient(135deg, #25D366, #128C7E); color: white; }
+.mbtn-wpp:hover { background: linear-gradient(135deg, #128C7E, #075E54); }
+.mbtn-nat { background: linear-gradient(135deg, #10B981, #059669); color: white; }
+.mbtn-nat:hover { background: linear-gradient(135deg, #059669, #047857); }
+.mbtn.hidden { display: none; }
 
 /* ---- LOADER ---- */
 .loader {
@@ -807,9 +926,56 @@ input[type=file] { display: none; }
 
 </div><!-- /wrap -->
 
+<!-- MODAL COMPARTILHAR -->
+<div class="modal-overlay" id="modalShare">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <div class="modal-hdr-icon">&#9992;</div>
+      <div>
+        <div class="modal-hdr-title">Compartilhar Checklist</div>
+        <div class="modal-hdr-sub">Baixar ou enviar via Telegram / WhatsApp</div>
+      </div>
+      <button class="modal-close" onclick="fecharModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-info">
+        O PDF sera gerado com todos os dados preenchidos.
+        <strong>Escolha como deseja exportar ou compartilhar:</strong>
+      </div>
+
+      <div class="modal-step">
+        <div class="step-num">1</div>
+        <div class="step-txt"><strong>Baixar PDF</strong> — Salva o arquivo no seu celular ou computador.</div>
+      </div>
+      <div class="modal-step">
+        <div class="step-num">2</div>
+        <div class="step-txt"><strong>Telegram</strong> — Abre o Telegram. Escolha o contato ou grupo e envie o PDF baixado.</div>
+      </div>
+      <div class="modal-step">
+        <div class="step-num">3</div>
+        <div class="step-txt"><strong>WhatsApp</strong> — Abre o WhatsApp para voce encaminhar o arquivo.</div>
+      </div>
+      <div class="modal-step">
+        <div class="step-num">4</div>
+        <div class="step-txt"><strong>Compartilhar</strong> — Usa o compartilhamento nativo do seu dispositivo (so funciona em celular).</div>
+      </div>
+
+      <div class="modal-divider">Escolha uma opcao</div>
+
+      <div class="modal-btns">
+        <button class="mbtn mbtn-dl" onclick="acaoBaixar()">&#128196; Baixar PDF</button>
+        <button class="mbtn mbtn-tg" onclick="acaoTelegram()">&#9992; Enviar pelo Telegram</button>
+        <button class="mbtn mbtn-wpp" onclick="acaoWhatsApp()">&#128241; Enviar pelo WhatsApp</button>
+        <button class="mbtn mbtn-nat hidden" id="btn-share-native" onclick="acaoShareNative()">&#8679; Compartilhar (Nativo)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="action-bar">
   <button class="btn-reset" onclick="resetForm()">&#8635; Limpar</button>
-  <button class="btn-pdf" onclick="gerarPDF()">&#128196; Gerar PDF</button>
+  <button class="btn-pdf" onclick="gerarPDF()">&#128196; Baixar PDF</button>
+  <button class="btn-tg"  onclick="abrirModal()">&#9992; Compartilhar</button>
 </div>
 
 <script>
@@ -1272,6 +1438,41 @@ function resetForm() {
 // =====================================================
 // PDF
 // =====================================================
+var _pdfMode = 'download'; // 'download' | 'share'
+var _pdfBlob = null;
+var _pdfFilename = '';
+
+function fecharModal() { document.getElementById('modalShare').classList.remove('show'); }
+function abrirModal()  { document.getElementById('modalShare').classList.add('show'); }
+
+// Verifica suporte ao Web Share API com arquivos
+if (navigator.canShare) {
+  document.getElementById('btn-share-native').classList.remove('hidden');
+}
+
+function acaoBaixar() {
+  fecharModal();
+  _pdfMode = 'download';
+  gerarPDF();
+}
+function acaoTelegram() {
+  fecharModal();
+  _pdfMode = 'download';
+  gerarPDF();
+  setTimeout(function() { window.open('https://t.me/', '_blank'); }, 1200);
+}
+function acaoWhatsApp() {
+  fecharModal();
+  _pdfMode = 'download';
+  gerarPDF();
+  setTimeout(function() { window.open('https://api.whatsapp.com/send', '_blank'); }, 1200);
+}
+function acaoShareNative() {
+  fecharModal();
+  _pdfMode = 'share';
+  gerarPDF();
+}
+
 function gerarPDF() {
   document.getElementById('loader').classList.add('show');
   setTimeout(function() { _gerarPDF(); }, 80);
@@ -1534,7 +1735,26 @@ function _gerarPDF() {
 
     var tech = document.getElementById('fTecnico').value || 'tecnico';
     var dt = document.getElementById('fData').value || new Date().toISOString().slice(0, 10);
-    doc.save('checklist_' + tech.replace(/\s+/g, '_') + '_' + dt + '.pdf');
+    _pdfFilename = 'checklist_' + tech.replace(/\s+/g, '_') + '_' + dt + '.pdf';
+
+    if (_pdfMode === 'share') {
+      // Web Share API nativa (Android/iOS)
+      var blob = doc.output('blob');
+      var file = new File([blob], _pdfFilename, { type: 'application/pdf' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({
+          title: 'Checklist SilverNet',
+          text: 'Checklist Ferramentario - ' + tech.toUpperCase(),
+          files: [file]
+        }).catch(function(e) { console.log('Share cancelado', e); });
+      } else {
+        // Fallback: baixa normalmente
+        doc.save(_pdfFilename);
+        alert('Compartilhamento nativo nao disponivel neste navegador. PDF baixado!');
+      }
+    } else {
+      doc.save(_pdfFilename);
+    }
 
   } catch (err) {
     alert('Erro ao gerar PDF: ' + err.message);
