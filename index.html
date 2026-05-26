@@ -441,37 +441,59 @@ input[type=file] { display: none; }
 /* ---- ASSINATURA ---- */
 .sig-body { padding: 14px; }
 .sig-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.sig-block { display: flex; flex-direction: column; gap: 4px; }
+.sig-block { display: flex; flex-direction: column; gap: 6px; position: relative; }
+.sig-wrap { position: relative; }
 .sig-canvas {
-  width: 100%; height: 110px;
-  border: 2px solid #D5DFF0;
-  border-radius: 8px;
-  background: white;
+  width: 100%; height: 180px;
+  border: 2px dashed #00C5E3;
+  border-radius: 12px;
+  background: #F8FBFF;
   cursor: crosshair;
   touch-action: none;
   display: block;
+  transition: border-color 0.2s, background 0.2s;
 }
+.sig-canvas.signed { border: 2px solid #10B981; background: white; }
+.sig-canvas.locked { pointer-events: none; cursor: default; border: 2px solid #0B1E3D; background: #F0F4F8; }
+.sig-hint {
+  font-size: 10px; color: #8FA3BF; text-align: center;
+  font-weight: 600; text-transform: uppercase; letter-spacing: .5px;
+}
+.sig-lock-badge {
+  display: none;
+  position: absolute; top: 6px; right: 6px;
+  background: #10B981; color: white;
+  font-size: 10px; font-weight: 700;
+  padding: 3px 9px; border-radius: 12px;
+  text-transform: uppercase; letter-spacing: .5px;
+  pointer-events: none;
+}
+.sig-lock-badge.show { display: block; }
 .sig-line {
   border-top: 2px solid #0B1E3D;
-  padding-top: 4px;
-  font-size: 9.5px;
-  font-weight: 700;
-  color: #4A6280;
-  text-align: center;
-  margin-top: 4px;
+  padding-top: 5px;
+  font-size: 9.5px; font-weight: 700;
+  color: #0B1E3D; text-align: center;
+  text-transform: uppercase; letter-spacing: .4px;
 }
-.btn-clr {
-  padding: 5px 12px;
-  border: 1.5px solid #D5DFF0;
-  border-radius: 6px;
-  background: white;
-  font-size: 11px;
-  font-weight: 700;
-  color: #4A6280;
-  cursor: pointer;
-  font-family: Arial, sans-serif;
+.sig-btns { display: flex; gap: 6px; }
+.btn-ok-sig {
+  flex: 1; padding: 8px 10px;
+  border: none; border-radius: 7px;
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: white; font-size: 12px; font-weight: 700;
+  cursor: pointer; font-family: Arial, sans-serif;
   text-transform: uppercase;
-  width: 100%;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.btn-ok-sig:hover { background: linear-gradient(135deg, #059669, #047857); }
+.btn-ok-sig:disabled { background: #D5DFF0; color: #8FA3BF; cursor: not-allowed; }
+.btn-clr {
+  padding: 8px 12px;
+  border: 1.5px solid #D5DFF0; border-radius: 7px;
+  background: white; font-size: 11px; font-weight: 700;
+  color: #4A6280; cursor: pointer;
+  font-family: Arial, sans-serif; text-transform: uppercase;
 }
 .btn-clr:hover { border-color: #EF4444; color: #EF4444; }
 
@@ -638,6 +660,107 @@ input[type=file] { display: none; }
 .mbtn-nat:hover { background: linear-gradient(135deg, #059669, #047857); }
 .mbtn.hidden { display: none; }
 
+/* ---- TOOLTIP / INFO ---- */
+.info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px; height: 18px;
+  background: #0B1E3D;
+  color: #00C5E3;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  flex-shrink: 0;
+  margin-left: 6px;
+  line-height: 1;
+  transition: background 0.2s;
+  position: relative;
+  vertical-align: middle;
+}
+.info-btn:hover { background: #00C5E3; color: #0B1E3D; }
+
+/* Modal info item */
+.info-modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(11,30,61,0.7);
+  z-index: 1100;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.info-modal-overlay.show { display: flex; }
+.info-modal-box {
+  background: white;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 380px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+}
+.info-modal-hdr {
+  background: linear-gradient(135deg, #0B1E3D, #1E4070);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 2px solid #00C5E3;
+}
+.info-modal-icon {
+  width: 32px; height: 32px;
+  background: rgba(0,197,227,0.2);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+  color: #00C5E3; font-weight: 700;
+}
+.info-modal-nome {
+  font-size: 13px;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+.info-modal-close {
+  margin-left: auto;
+  background: rgba(255,255,255,0.12);
+  border: none; color: white;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.info-modal-body {
+  padding: 18px;
+}
+.info-modal-txt {
+  font-size: 13.5px;
+  color: #1A2B42;
+  line-height: 1.7;
+  text-transform: none;
+}
+.info-modal-ok {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 10px;
+  background: linear-gradient(135deg, #0B1E3D, #1E4070);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+  text-transform: uppercase;
+}
+.info-modal-ok:hover { background: linear-gradient(135deg, #1E4070, #009BB5); }
+
 /* ---- LOADER ---- */
 .loader {
   display: none;
@@ -721,30 +844,17 @@ input[type=file] { display: none; }
     <div class="frow">
       <div class="fcell">
         <label>Inspetor(es):</label>
-        <input type="text" id="fFiscal" placeholder="Nome do fiscal">
+        <input type="text" id="fFiscal" placeholder="Nome do fiscal" autocomplete="new-password">
       </div>
     </div>
     <div class="frow">
       <div class="fcell" style="flex:2">
         <label>Nome do Colaborador:</label>
-        <input type="text" id="fTecnico" placeholder="Nome do tecnico" list="dl-tech" autocomplete="off">
-        <datalist id="dl-tech">
-          <option value="ANDERSON">
-          <option value="BRUNO">
-          <option value="CARLOS">
-          <option value="DIEGO">
-          <option value="EDUARDO">
-          <option value="FELIPE">
-          <option value="GABRIEL">
-          <option value="HENRIQUE">
-          <option value="IGOR">
-          <option value="JOAO">
-          <option value="LUCAS">
-        </datalist>
+        <input type="text" id="fTecnico" placeholder="Nome do tecnico" autocomplete="new-password">
       </div>
       <div class="fcell">
         <label>N&ordm; OS / Matricula:</label>
-        <input type="text" id="fOS" placeholder="Numero da OS">
+        <input type="text" id="fOS" autocomplete="new-password" placeholder="Numero da OS">
       </div>
       <div class="fcell" style="flex:0 0 auto">
         <label>Setor:</label>
@@ -798,9 +908,9 @@ input[type=file] { display: none; }
       <div class="card-cnt" id="cnt-epc">0/8</div>
     </div>
     <div class="carro-strip">
-      <div class="carro-cell"><label>Carro N&ordm;:</label><input type="text" id="carroNr" placeholder="Ex: 07"></div>
-      <div class="carro-cell"><label>Placa:</label><input type="text" id="carroPlaca" placeholder="ABC-1D23"></div>
-      <div class="carro-cell"><label>Modelo:</label><input type="text" id="carroModelo" placeholder="Ex: Fiat Strada"></div>
+      <div class="carro-cell"><label>Carro N&ordm;:</label><input type="text" id="carroNr" autocomplete="new-password" placeholder="Ex: 07"></div>
+      <div class="carro-cell"><label>Placa:</label><input type="text" id="carroPlaca" autocomplete="new-password" placeholder="ABC-1D23"></div>
+      <div class="carro-cell"><label>Modelo:</label><input type="text" id="carroModelo" autocomplete="new-password" placeholder="Ex: Fiat Strada"></div>
     </div>
     <div class="prog-wrap">
       <div class="prog-top"><span>Progresso</span><span id="pct-epc">0%</span></div>
@@ -867,13 +977,13 @@ input[type=file] { display: none; }
       <div class="card-icon">&#128248;</div>
       <div>
         <div class="card-title">Registro Fotografico</div>
-        <div class="card-sub">Ate 10 fotos com carimbo de identificacao automatico</div>
+        <div class="card-sub">Ate 300 fotos com carimbo de identificacao automatico</div>
       </div>
-      <div class="card-cnt" id="cnt-foto">0/10</div>
+      <div class="card-cnt" id="cnt-foto">0/300</div>
     </div>
     <div class="foto-body">
       <div class="foto-ctrl">
-        <input type="text" class="foto-lbl" id="ph-label" placeholder="Identificacao da foto (ex: EPI, Fusionadora, Veiculo...)">
+        <input type="text" class="foto-lbl" id="ph-label" autocomplete="new-password" placeholder="Identificacao da foto (ex: EPI, Fusionadora, Veiculo...)">
       </div>
       <div class="foto-btns">
         <button class="btn-cam" onclick="trigCam()">&#128247; Camera</button>
@@ -905,26 +1015,60 @@ input[type=file] { display: none; }
       <div class="card-icon">&#9998;</div>
       <div>
         <div class="card-title">Assinaturas</div>
-        <div class="card-sub">Responsavel pela inspecao e operador</div>
+        <div class="card-sub">Assine e confirme para bloquear</div>
       </div>
     </div>
     <div class="sig-body">
       <div class="sig-row">
+
+        <!-- FISCAL / INSPETOR -->
         <div class="sig-block">
-          <canvas class="sig-canvas" id="sigInsp" width="400" height="110"></canvas>
-          <button class="btn-clr" onclick="clearSig('sigInsp',0)">X Limpar</button>
-          <div class="sig-line">Nome do Responsavel pela Inspecao</div>
+          <div class="sig-hint">&#9998; Assine abaixo (Fiscal / Inspetor)</div>
+          <div class="sig-wrap">
+            <canvas class="sig-canvas" id="sigInsp" width="400" height="120"></canvas>
+            <div class="sig-lock-badge" id="badge-insp">&#128274; Confirmada</div>
+          </div>
+          <div class="sig-btns">
+            <button class="btn-ok-sig" id="btn-ok-insp" onclick="confirmarSig('sigInsp',0)" disabled>&#10003; Confirmar</button>
+            <button class="btn-clr" id="btn-clr-insp" onclick="clearSig('sigInsp',0)">&#10005; Limpar</button>
+          </div>
+          <div class="sig-line">Responsavel pela Inspecao / Fiscal</div>
         </div>
+
+        <!-- TECNICO / OPERADOR -->
         <div class="sig-block">
-          <canvas class="sig-canvas" id="sigOper" width="400" height="110"></canvas>
-          <button class="btn-clr" onclick="clearSig('sigOper',1)">X Limpar</button>
+          <div class="sig-hint">&#9998; Assine abaixo (Tecnico / Operador)</div>
+          <div class="sig-wrap">
+            <canvas class="sig-canvas" id="sigOper" width="400" height="120"></canvas>
+            <div class="sig-lock-badge" id="badge-oper">&#128274; Confirmada</div>
+          </div>
+          <div class="sig-btns">
+            <button class="btn-ok-sig" id="btn-ok-oper" onclick="confirmarSig('sigOper',1)" disabled>&#10003; Confirmar</button>
+            <button class="btn-clr" id="btn-clr-oper" onclick="clearSig('sigOper',1)">&#10005; Limpar</button>
+          </div>
           <div class="sig-line">Nome do Operador / Tecnico</div>
         </div>
+
       </div>
     </div>
   </div>
 
 </div><!-- /wrap -->
+
+<!-- MODAL INFO ITEM -->
+<div class="info-modal-overlay" id="infoModal">
+  <div class="info-modal-box">
+    <div class="info-modal-hdr">
+      <div class="info-modal-icon">?</div>
+      <div class="info-modal-nome" id="infoModalNome">Item</div>
+      <button class="info-modal-close" onclick="fecharInfoModal()">&#10005;</button>
+    </div>
+    <div class="info-modal-body">
+      <div class="info-modal-txt" id="infoModalTxt"></div>
+      <button class="info-modal-ok" onclick="fecharInfoModal()">&#10003; Entendido</button>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL COMPARTILHAR -->
 <div class="modal-overlay" id="modalShare">
@@ -983,30 +1127,30 @@ input[type=file] { display: none; }
 // DADOS
 // =====================================================
 var EPIS = [
-  {id:'e01', pfx:'e', nome:'CINTO PARAQUEDISTA'},
-  {id:'e02', pfx:'e', nome:'TALABARTE DE POSICIONAMENTO'},
-  {id:'e03', pfx:'e', nome:'TALABARTE Y ABS'},
-  {id:'e04', pfx:'e', nome:'CAPACETE COM JUGULAR'},
-  {id:'e05', pfx:'e', nome:'OCULOS DE PROTECAO FUME'},
-  {id:'e06', pfx:'e', nome:'OCULOS DE PROTECAO INCOLOR'},
-  {id:'e07', pfx:'e', nome:'PROTETOR AURICULAR PLUG'},
-  {id:'e08', pfx:'e', nome:'PROTETOR SOLAR FPS 30'},
-  {id:'e09', pfx:'e', nome:'CAPA DE CHUVA'},
-  {id:'e10', pfx:'e', nome:'LUVA MULTITATO PRETA'},
-  {id:'e11', pfx:'e', nome:'LUVA DE VAQUETA PETROLEIRA'},
-  {id:'e12', pfx:'e', nome:'BOTINA DE COURO'},
-  {id:'e13', pfx:'e', nome:'TRAVA QUEDAS'}
+  {id:'e01', pfx:'e', nome:'CINTO PARAQUEDISTA',          info:'Cinto de segurança tipo paraquedista, utilizado em trabalhos em altura. Deve estar em bom estado, sem cortes, costuras soltas ou deformacoes. CA obrigatorio.'},
+  {id:'e02', pfx:'e', nome:'TALABARTE DE POSICIONAMENTO', info:'Corda de ancoragem simples usada para posicionamento do tecnico no poste ou estrutura. Verificar ganchos, carabineiras e costuras.'},
+  {id:'e03', pfx:'e', nome:'TALABARTE Y ABS',             info:'Talabarte duplo com absorvedor de energia (ABS), obrigatorio para trabalhos acima de 2m. O absorvedor nao pode estar ativado (expandido).'},
+  {id:'e04', pfx:'e', nome:'CAPACETE COM JUGULAR',        info:'Capacete de segurança com jugular (tira de fixacao no queixo). Protege contra impactos e quedas de objetos. Verificar trincas e validade do CA.'},
+  {id:'e05', pfx:'e', nome:'OCULOS DE PROTECAO FUME',     info:'Oculos de lente escura para protecao em ambientes externos com incidencia solar intensa. Obrigatorio em campo durante o dia.'},
+  {id:'e06', pfx:'e', nome:'OCULOS DE PROTECAO INCOLOR',  info:'Oculos de lente transparente para protecao contra particulas, poeira e respingos. Usar em ambientes fechados ou durante corte de cabos.'},
+  {id:'e07', pfx:'e', nome:'PROTETOR AURICULAR PLUG',     info:'Protetor auricular tipo plug (espuma), usado em ambientes com ruido elevado, como proximos a geradores ou obras. Descartavel ou reutilizavel com higiene.'},
+  {id:'e08', pfx:'e', nome:'PROTETOR SOLAR FPS 30',       info:'Protecao obrigatoria para tecnicos que trabalham em campo exposto ao sol. FPS minimo 30. Deve ser reaplicado ao longo do dia.'},
+  {id:'e09', pfx:'e', nome:'CAPA DE CHUVA',               info:'Capa impermeavel para protecao em dias de chuva. Deve cobrir o corpo adequadamente. Verificar se nao esta rasgada ou com costuras abertas.'},
+  {id:'e10', pfx:'e', nome:'LUVA MULTITATO PRETA',        info:'Luva de tato (fina) para manuseio de equipamentos e cabos, oferece protecao leve e mantém a sensibilidade das maos. Verificar integridade.'},
+  {id:'e11', pfx:'e', nome:'LUVA DE VAQUETA PETROLEIRA',  info:'Luva grossa de couro cru (vaqueta), para trabalhos de maior risco como manuseio de escadas, cabos pesados e estruturas metalicas.'},
+  {id:'e12', pfx:'e', nome:'BOTINA DE COURO',             info:'Calcado de seguranca com biqueira de aco e solado antiderrapante. Obrigatoria em campo. Verificar CA, estado do solado e amarracao.'},
+  {id:'e13', pfx:'e', nome:'TRAVA QUEDAS',                info:'Dispositivo de protecao contra queda livre, acoplado ao talabarte e a linha de vida. Trava automaticamente em caso de queda brusca. Verificar funcionamento.'}
 ];
 
 var EPCS = [
-  {id:'p01', pfx:'p', nome:'FITA ZEBRADA'},
-  {id:'p02', pfx:'p', nome:'NIVELADOR DE ESCADAS'},
-  {id:'p03', pfx:'p', nome:'CHAVE TESTE'},
-  {id:'p04', pfx:'p', nome:'CONE E BANDEIROLA'},
-  {id:'p05', pfx:'p', nome:'CORDAS PARA ESCADAS'},
-  {id:'p06', pfx:'p', nome:'CORDAS PARA LINHA DE VIDA'},
-  {id:'p07', pfx:'p', nome:'ESCADA EXTENSIVA'},
-  {id:'p08', pfx:'p', nome:'ESCADA DE ABRIR'}
+  {id:'p01', pfx:'p', nome:'FITA ZEBRADA',          info:'Fita de sinalizacao listrada (amarela/preta ou vermelha/branca) usada para isolar e demarcar areas de risco e trabalho em campo. Deve estar sempre no veiculo.'},
+  {id:'p02', pfx:'p', nome:'NIVELADOR DE ESCADAS',  info:'Dispositivo acoplado aos pes da escada para compensar desniveis do terreno, garantindo estabilidade. Obrigatorio para uso de escadas em terrenos irregulares.'},
+  {id:'p03', pfx:'p', nome:'CHAVE TESTE',           info:'Instrumento para verificar presenca de tensao eletrica antes de manusear cabos ou instalacoes. Essencial para seguranca em qualquer intervencao eletrica.'},
+  {id:'p04', pfx:'p', nome:'CONE E BANDEIROLA',     info:'Cones de sinalizacao e bandeirolas para delimitar a area de trabalho em vias publicas e calcadas, protegendo tecnicos e pedestres.'},
+  {id:'p05', pfx:'p', nome:'CORDAS PARA ESCADAS',   info:'Cordas usadas para amarrar e estabilizar a escada ao poste ou estrutura durante o trabalho em altura. Evitam o deslizamento lateral da escada.'},
+  {id:'p06', pfx:'p', nome:'CORDAS PARA LINHA DE VIDA', info:'Cordas resistentes utilizadas como linha de vida horizontal ou vertical para ancoragem do cinto e talabarte do tecnico durante o trabalho em altura.'},
+  {id:'p07', pfx:'p', nome:'ESCADA EXTENSIVA',      info:'Escada de aluminio extensivel (4,20m a 7,20m) para acesso a postes e estruturas altas. Verificar travas, degraus e estado geral antes do uso.'},
+  {id:'p08', pfx:'p', nome:'ESCADA DE ABRIR',       info:'Escada tipo A (autoportante) de 7 degraus para trabalhos em alturas menores. Deve ser totalmente aberta e travada antes do uso.'}
 ];
 
 var FERR_GRUPOS = [
@@ -1014,62 +1158,62 @@ var FERR_GRUPOS = [
     grupo: 'FERRAMENTAL GERAL',
     pfx: 'g',
     itens: [
-      {id:'g01', nome:"ALICATE DE CORTE DIAGONAL '6'"},
-      {id:'g02', nome:'ALICATE CRIMPADOR RJ11/RJ45'},
-      {id:'g03', nome:"ALICATE UNIVERSAL '8'"},
-      {id:'g04', nome:"ALICATE DE BICO RETO '6'"},
-      {id:'g05', nome:'BADISCO (TELEFONE DE TESTE)'},
-      {id:'g06', nome:'BOLSA DE LONA'},
-      {id:'g07', nome:"BROCA DE VIDEA LONGA '10'"},
-      {id:'g08', nome:"BROCA DE VIDEA CURTA '10'"},
-      {id:'g09', nome:'TRAVA ESCADA'},
-      {id:'g10', nome:'CALCO DE ESCADA'},
-      {id:'g11', nome:'CANETA DE TESTE DE ENERGIA'},
-      {id:'g12', nome:'CAPA DE CHUVA'},
-      {id:'g13', nome:'CARRINHO CAVALETE'},
-      {id:'g14', nome:'CHAVE DE FENDA 1/4 GRANDE'},
-      {id:'g15', nome:'CHAVE DE FENDA 3/16 MEDIA'},
-      {id:'g16', nome:'CHAVE DE FENDA 1/8 PEQUENA'},
-      {id:'g17', nome:'CHAVES PHILIPS 1/4 GRANDE'},
-      {id:'g18', nome:'CHAVES PHILIPS 3/16 MEDIA'},
-      {id:'g19', nome:'CHAVES PHILIPS 1/8 PEQUENA'},
-      {id:'g20', nome:'CORRENTE PARA ESCADA'},
-      {id:'g21', nome:'ESCADA 7 DEGRAUS'},
-      {id:'g22', nome:'ESCADA EXTENSIVA 4.20 X 7.20'},
-      {id:'g23', nome:'EXTENSAO ELETRICA 10MTS'},
-      {id:'g24', nome:'FITA GUIA DE NYLON 20MTS'},
-      {id:'g25', nome:'FURADEIRA DE IMPACTO'},
-      {id:'g26', nome:'FUZIMEC (CINTADEIRA)'},
-      {id:'g27', nome:'LANTERNA'},
-      {id:'g28', nome:'MALETA DE FERRAMENTAS'},
-      {id:'g29', nome:'MARTELO DE UNHA'},
-      {id:'g30', nome:'NOTEBOOK / CELULAR'},
-      {id:'g31', nome:'PISTOLA DE COLA QUENTE'}
+      {id:'g01', nome:"ALICATE DE CORTE DIAGONAL '6'",   info:"Alicate de corte reto com 6 polegadas. Usado para cortar cabos, fios e lacres. Verificar estado do fio de corte e articulacao."},
+      {id:'g02', nome:'ALICATE CRIMPADOR RJ11/RJ45',     info:'Alicate para crimpar conectores RJ11 (telefone) e RJ45 (rede). Verificar se as cavidades de crimpagem estao sem deformacao.'},
+      {id:'g03', nome:"ALICATE UNIVERSAL '8'",           info:"Alicate de uso geral com 8 polegadas, para apertar, dobrar e cortar materiais variados. Verificar articulacao e estado dos dentes."},
+      {id:'g04', nome:"ALICATE DE BICO RETO '6'",        info:"Alicate de bico pontiagudo com 6 polegadas para trabalhos em espacos pequenos, como dobrar arames e posicionar conectores."},
+      {id:'g05', nome:'BADISCO (TELEFONE DE TESTE)',     info:'Telefone de campo (garra jacare) para testar linhas telefonicas e realizar comunicacao durante a manutencao de cabos.'},
+      {id:'g06', nome:'BOLSA DE LONA',                   info:'Bolsa resistente para transporte e organizacao das ferramentas em campo. Verificar integridade das alcas e fechamentos.'},
+      {id:'g07', nome:"BROCA DE VIDEA LONGA '10'",       info:"Broca de 10mm para concreto, longa (acima de 15cm), usada para perfuracao em paredes e lajes com maior profundidade."},
+      {id:'g08', nome:"BROCA DE VIDEA CURTA '10'",       info:"Broca de 10mm para concreto, curta (ate 10cm), para passagens rasas em paredes. Verificar ponta e desgaste."},
+      {id:'g09', nome:'TRAVA ESCADA',                    info:'Dispositivo de seguranca que trava a escada extensiva na posicao desejada. Verificar se os dentes de travamento estao intactos e funcionando.'},
+      {id:'g10', nome:'CALCO DE ESCADA',                 info:'Peca de borracha ou plastico colocada nos pes da escada para evitar deslizamento em superficies lisas. Verificar fixacao e desgaste.'},
+      {id:'g11', nome:'CANETA DE TESTE DE ENERGIA',      info:'Detector de tensao sem contato. Aponta proximidade de fios energizados com sinal sonoro ou luminoso. Testar antes de usar.'},
+      {id:'g12', nome:'CAPA DE CHUVA',                   info:'Capa impermeavel para protecao do tecnico em dias de chuva. Verificar se nao esta rasgada. Item de EPI e de protecao do ferramental.'},
+      {id:'g13', nome:'CARRINHO CAVALETE',               info:'Suporte movel (cavalete com rodas) para apoiar o carretel de cabo durante o lancamento. Facilita o desenrolamento controlado.'},
+      {id:'g14', nome:'CHAVE DE FENDA 1/4 GRANDE',       info:'Chave de fenda de lamina larga (1/4 pol.), para parafusos de cabeca fenda grande em caixas de distribuicao e estruturas.'},
+      {id:'g15', nome:'CHAVE DE FENDA 3/16 MEDIA',       info:'Chave de fenda de tamanho medio (3/16 pol.) para uso geral em instalacoes e manutencoes diversas.'},
+      {id:'g16', nome:'CHAVE DE FENDA 1/8 PEQUENA',      info:'Chave de fenda pequena (1/8 pol.) para parafusos de precisao em equipamentos como ONUs, roteadores e conectores.'},
+      {id:'g17', nome:'CHAVES PHILIPS 1/4 GRANDE',       info:'Chave Phillips grande para parafusos de cabeca cruzada em estruturas e caixas de passagem.'},
+      {id:'g18', nome:'CHAVES PHILIPS 3/16 MEDIA',       info:'Chave Phillips media para uso geral em instalacoes de rede e equipamentos de campo.'},
+      {id:'g19', nome:'CHAVES PHILIPS 1/8 PEQUENA',      info:'Chave Phillips pequena para parafusos de precisao em equipamentos e conectores compactos.'},
+      {id:'g20', nome:'CORRENTE PARA ESCADA',            info:'Corrente metalica usada para amarrar a base da escada ao veiculo ou estrutura fixa, evitando tombamento durante o uso.'},
+      {id:'g21', nome:'ESCADA 7 DEGRAUS',                info:'Escada tipo A com 7 degraus (autoportante). Para acesso a alturas medias. Verificar trava central, degraus e pes de borracha.'},
+      {id:'g22', nome:'ESCADA EXTENSIVA 4.20 X 7.20',   info:'Escada extensivel de aluminio que vai de 4,20m ate 7,20m. Para acesso a postes e alturas maiores. Verificar travas, degraus e estado.'},
+      {id:'g23', nome:'EXTENSAO ELETRICA 10MTS',         info:'Extensao eletrica de 10 metros para ligar ferramentas eletricas em campo. Verificar fios, tomadas e estado do cabo (sem emendas).'},
+      {id:'g24', nome:'FITA GUIA DE NYLON 20MTS',        info:'Fita (flat nylon) para passagem e puxamento de cabos em dutos e eletrodutos. Verificar se nao esta quebrada ou enroscada.'},
+      {id:'g25', nome:'FURADEIRA DE IMPACTO',            info:'Furadeira com funcao de percussao para perfuracao em alvenaria e concreto. Verificar bateria/carregador, mandril e funcionamento.'},
+      {id:'g26', nome:'FUZIMEC (CINTADEIRA)',            info:'Ferramenta para apertamento de cinta plastica (abraçadeira) com tensao controlada. Garante fixacao uniforme de cabos em estruturas.'},
+      {id:'g27', nome:'LANTERNA',                        info:'Lanterna para iluminacao em locais escuros como pocos, forros e caixas de passagem. Verificar carga das baterias antes de usar.'},
+      {id:'g28', nome:'MALETA DE FERRAMENTAS',           info:'Maleta rigida para transporte organizado das ferramentas. Verificar fechamentos, alca e se todas as ferramentas estao acomodadas.'},
+      {id:'g29', nome:'MARTELO DE UNHA',                 info:'Martelo para pregar pregos, remover fixacoes e trabalhos de alvenaria leve. Verificar cabeca e cabo (sem rachaduras).'},
+      {id:'g30', nome:'NOTEBOOK / CELULAR',              info:'Dispositivo para acesso ao sistema, registro de OS e comunicacao. Verificar carga, funcionamento e acesso ao sistema da empresa.'},
+      {id:'g31', nome:'PISTOLA DE COLA QUENTE',          info:'Pistola para aplicacao de cola termofusivel. Usada para fixacao de cabos e vedacoes. Verificar funcionamento e disponibilidade de bastoes.'}
     ]
   },
   {
     grupo: 'KIT OPTICO',
     pfx: 'o',
     itens: [
-      {id:'o01', nome:'POWER METER (MEDIDOR DE POTENCIA)'},
-      {id:'o02', nome:'CANETA DE LUZ OPTICA (VFL)'},
-      {id:'o03', nome:'CLIVADOR'},
-      {id:'o04', nome:'ALICATE DECAPADOR DE ACRILATO'},
-      {id:'o05', nome:'ALICATE DECAPADOR DE CABO OPTICO'},
-      {id:'o06', nome:'RESERVATORIO DE ALCOOL ISOPROPILICO'},
-      {id:'o07', nome:'PAPEL PARA LIMPEZA DE FIBRA'}
+      {id:'o01', nome:'POWER METER (MEDIDOR DE POTENCIA)', info:'Equipamento que mede a potencia do sinal optico em dBm. Essencial para verificar atenuacao e qualidade do link de fibra. Verificar calibracao e bateria.'},
+      {id:'o02', nome:'CANETA DE LUZ OPTICA (VFL)',        info:'Caneta laser vermelha (650nm) usada para localizar quebras, dobras e defeitos visiveis na fibra optica. Nunca apontar para os olhos.'},
+      {id:'o03', nome:'CLIVADOR',                          info:'Ferramenta de precisao para corte perpendicular da fibra optica. Um corte ruim causa perda de sinal. Verificar lamina e limpeza.'},
+      {id:'o04', nome:'ALICATE DECAPADOR DE ACRILATO',     info:'Alicate especifico para remover o revestimento acrilato da fibra optica (camada mais interna). Abertura calibrada para nao danificar a fibra.'},
+      {id:'o05', nome:'ALICATE DECAPADOR DE CABO OPTICO',  info:'Alicate para decapar a capa externa do cabo optico (buffer/jaqueta). Verificar regulagem e estado das laminas.'},
+      {id:'o06', nome:'RESERVATORIO DE ALCOOL ISOPROPILICO', info:'Frasco com alcool isopropilico 99% para limpeza de conectores e fibras antes de qualquer emenda ou medicao. Usar apenas com papel especifico.'},
+      {id:'o07', nome:'PAPEL PARA LIMPEZA DE FIBRA',       info:'Papel especial (lint-free) para limpeza de conectores opticos. Nao deixa residuos. Jamais substituir por papel comum ou pano.'}
     ]
   },
   {
     grupo: 'APRESENTACAO INDIVIDUAL',
     pfx: 'a',
     itens: [
-      {id:'a01', nome:'CAMISA (UNIFORME)'},
-      {id:'a02', nome:'CALCA (UNIFORME)'},
-      {id:'a03', nome:'BOTA DE SEGURANCA'},
-      {id:'a04', nome:'BARBA FEITA'},
-      {id:'a05', nome:'HIGIENE PESSOAL'},
-      {id:'a06', nome:'ORGANIZACAO DO VEICULO'}
+      {id:'a01', nome:'CAMISA (UNIFORME)',          info:'Camisa oficial da SilverNet, limpa e em bom estado. O tecnico deve estar identificado com o uniforme da empresa durante todo o expediente.'},
+      {id:'a02', nome:'CALCA (UNIFORME)',            info:'Calca do uniforme SilverNet, limpa e sem rasgos. Usar calca de tecido resistente, adequada para trabalho em campo.'},
+      {id:'a03', nome:'BOTA DE SEGURANCA',           info:'Bota com biqueira de aco e solado antiderrapante, obrigatoria para atividades de campo. Verificar CA, estado e amarracao correta.'},
+      {id:'a04', nome:'BARBA FEITA',                 info:'O tecnico deve estar barbeado ou com barba aparada. Presentacao pessoal e parte da imagem da empresa perante o cliente.'},
+      {id:'a05', nome:'HIGIENE PESSOAL',             info:'O tecnico deve estar com higiene adequada: maos limpas, uniforme sem odores, aparencia cuidada. Representa a imagem da SilverNet em campo.'},
+      {id:'a06', nome:'ORGANIZACAO DO VEICULO',      info:'O veiculo deve estar limpo, organizado e com as ferramentas bem acondicionadas. Verificar se nao ha materiais soltos ou mal fixados no baú.'}
     ]
   }
 ];
@@ -1102,6 +1246,39 @@ function init() {
 window.onload = init;
 
 // =====================================================
+// PROTECAO CONTRA ATUALIZACAO / FECHAMENTO ACIDENTAL
+// =====================================================
+var _formSujo = false;
+
+function marcarSujo() { _formSujo = true; }
+
+window.addEventListener('beforeunload', function(e) {
+  if (_formSujo) {
+    var msg = 'As informacoes preenchidas serao perdidas. Deseja realmente sair ou atualizar a pagina?';
+    e.preventDefault();
+    e.returnValue = msg;
+    return msg;
+  }
+});
+
+// Detecta qualquer alteracao em inputs, selects, textareas e radios
+document.addEventListener('change', function(e) {
+  var tag = e.target.tagName;
+  if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') marcarSujo();
+});
+document.addEventListener('input', function(e) {
+  var tag = e.target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA') marcarSujo();
+});
+
+// Apos limpar formulario, desativa o aviso (dados ja foram apagados)
+var _origReset = resetForm;
+resetForm = function() {
+  _origReset();
+  _formSujo = false;
+};
+
+// =====================================================
 // BUILD TABLES
 // =====================================================
 function buildTabela(tbId, items, onchange, hasCond) {
@@ -1112,6 +1289,10 @@ function buildTabela(tbId, items, onchange, hasCond) {
     var tr = document.createElement('tr');
     tr.setAttribute('data-idx', i);
     if (i % 2 === 1) tr.style.background = '#F8FAFD';
+
+    var infoBtn = item.info
+      ? '<button class="info-btn" onclick="abrirInfoModal(\''+item.nome+'\',\''+item.info+'\')" title="Saiba mais">?</button>'
+      : '';
 
     var condHtml = hasCond
       ? '<td><select class="cs" id="' + pfx + '_c_' + item.id + '" onchange="csStyle(this)">'
@@ -1127,7 +1308,7 @@ function buildTabela(tbId, items, onchange, hasCond) {
     var obsLabel = hasCond ? 'OBS...' : 'OBS...';
 
     tr.innerHTML =
-      '<td><div class="iname">' + item.nome + '</div></td>'
+      '<td><div class="iname">' + item.nome + infoBtn + '</div></td>'
       + '<td><div class="rg"><div class="rb">'
       + '<input type="radio" name="' + pfx + '_' + item.id + '" id="' + pfx + '_s_' + item.id + '" value="Sim">'
       + '<label for="' + pfx + '_s_' + item.id + '" class="lsim">SIM</label>'
@@ -1164,8 +1345,11 @@ function buildFerr() {
       var tr = document.createElement('tr');
       if (rowIdx % 2 === 1) tr.style.background = '#F8FAFD';
 
+      var ferrInfoBtn = item.info
+        ? '<button class="info-btn" onclick="abrirInfoModal(\''+item.nome+'\',\''+item.info+'\')" title="Saiba mais">?</button>'
+        : '';
       tr.innerHTML =
-        '<td><div class="iname">' + item.nome + '</div></td>'
+        '<td><div class="iname">' + item.nome + ferrInfoBtn + '</div></td>'
         + '<td><div class="rg"><div class="rb">'
         + '<input type="radio" name="' + pfx + '_' + item.id + '" id="' + pfx + '_s_' + item.id + '" value="Sim">'
         + '<label for="' + pfx + '_s_' + item.id + '" class="lsim">SIM</label>'
@@ -1263,22 +1447,20 @@ document.getElementById('inp-cam').addEventListener('change', function(e) {
 });
 document.getElementById('inp-gal').addEventListener('change', function(e) {
   var files = e.target.files;
-  var max = 10 - photos.length;
+  var max = 300 - photos.length;
   for (var i = 0; i < Math.min(files.length, max); i++) processPhoto(files[i]);
   this.value = '';
 });
 
 function trigCam() {
-  if (photos.length >= 10) { alert('Maximo de 10 fotos.'); return; }
   document.getElementById('inp-cam').click();
 }
 function trigGal() {
-  if (photos.length >= 10) { alert('Maximo de 10 fotos.'); return; }
   document.getElementById('inp-gal').click();
 }
 
 function processPhoto(file) {
-  if (!file || photos.length >= 10) return;
+  if (!file || photos.length >= 300) return;
   var label = document.getElementById('ph-label').value.trim() || 'REGISTRO DE CAMPO';
   var reader = new FileReader();
   reader.onload = function(e) {
@@ -1321,7 +1503,7 @@ function processPhoto(file) {
 function updFotoUI() {
   var grid = document.getElementById('ph-grid');
   var empty = document.getElementById('ph-empty');
-  document.getElementById('cnt-foto').textContent = photos.length + '/10';
+  document.getElementById('cnt-foto').textContent = photos.length + '/300';
   grid.innerHTML = '';
   empty.style.display = photos.length ? 'none' : 'block';
   for (var i = 0; i < photos.length; i++) {
@@ -1343,11 +1525,14 @@ function delFoto(i) { photos.splice(i, 1); updFotoUI(); }
 // =====================================================
 // ASSINATURA
 // =====================================================
+var sigLocked = [false, false];
+
 function initSig(cvId, idx) {
   var cv = document.getElementById(cvId);
   var ctx = cv.getContext('2d');
   var drawing = false;
   var lx = 0, ly = 0;
+  var btnOk  = document.getElementById(idx === 0 ? 'btn-ok-insp' : 'btn-ok-oper');
 
   function getPos(e) {
     var r = cv.getBoundingClientRect();
@@ -1359,52 +1544,70 @@ function initSig(cvId, idx) {
     return { x: (e.clientX - r.left) * sx, y: (e.clientY - r.top) * sy };
   }
 
-  cv.addEventListener('mousedown', function(e) {
+  function startDraw(e) {
+    if (sigLocked[idx]) return;
     drawing = true;
     var p = getPos(e);
     lx = p.x; ly = p.y;
     ctx.beginPath(); ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
     ctx.fillStyle = '#0B1E3D'; ctx.fill();
-  });
-  cv.addEventListener('mousemove', function(e) {
-    if (!drawing) return;
+  }
+  function moveDraw(e) {
+    if (sigLocked[idx] || !drawing) return;
     var p = getPos(e);
     ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(p.x, p.y);
     ctx.strokeStyle = '#0B1E3D'; ctx.lineWidth = 2.5;
     ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke();
     lx = p.x; ly = p.y;
     sigHas[idx] = true;
-  });
-  cv.addEventListener('mouseup', function() { drawing = false; });
-  cv.addEventListener('mouseleave', function() { drawing = false; });
-  cv.addEventListener('touchstart', function(e) {
-    e.preventDefault(); drawing = true;
-    var p = getPos(e); lx = p.x; ly = p.y;
-    ctx.beginPath(); ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
-    ctx.fillStyle = '#0B1E3D'; ctx.fill();
-  }, { passive: false });
-  cv.addEventListener('touchmove', function(e) {
-    e.preventDefault(); if (!drawing) return;
-    var p = getPos(e);
-    ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(p.x, p.y);
-    ctx.strokeStyle = '#0B1E3D'; ctx.lineWidth = 2.5;
-    ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke();
-    lx = p.x; ly = p.y; sigHas[idx] = true;
-  }, { passive: false });
-  cv.addEventListener('touchend', function() { drawing = false; });
+    cv.classList.add('signed');
+    if (btnOk) btnOk.disabled = false;
+  }
+  function stopDraw() { drawing = false; }
+
+  cv.addEventListener('mousedown', startDraw);
+  cv.addEventListener('mousemove', moveDraw);
+  cv.addEventListener('mouseup', stopDraw);
+  cv.addEventListener('mouseleave', stopDraw);
+  cv.addEventListener('touchstart', function(e) { e.preventDefault(); startDraw(e); }, { passive: false });
+  cv.addEventListener('touchmove',  function(e) { e.preventDefault(); moveDraw(e);  }, { passive: false });
+  cv.addEventListener('touchend',   stopDraw);
+}
+
+function confirmarSig(cvId, idx) {
+  var cv     = document.getElementById(cvId);
+  var badge  = document.getElementById(idx === 0 ? 'badge-insp'   : 'badge-oper');
+  var btnOk  = document.getElementById(idx === 0 ? 'btn-ok-insp'  : 'btn-ok-oper');
+  var btnClr = document.getElementById(idx === 0 ? 'btn-clr-insp' : 'btn-clr-oper');
+
+  sigLocked[idx] = true;
+  cv.classList.add('locked');
+  cv.classList.remove('signed');
+  badge.classList.add('show');
+  btnOk.disabled = true;
+  btnOk.textContent = '✓ Confirmada';
+  btnClr.textContent = '🔓 Desbloquear';
 }
 
 function clearSig(cvId, idx) {
-  var cv = document.getElementById(cvId);
-  cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
+  var cv     = document.getElementById(cvId);
+  var badge  = document.getElementById(idx === 0 ? 'badge-insp'   : 'badge-oper');
+  var btnOk  = document.getElementById(idx === 0 ? 'btn-ok-insp'  : 'btn-ok-oper');
+  var btnClr = document.getElementById(idx === 0 ? 'btn-clr-insp' : 'btn-clr-oper');
+
+  sigLocked[idx] = false;
   sigHas[idx] = false;
+  cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
+  cv.classList.remove('locked', 'signed');
+  badge.classList.remove('show');
+  if (btnOk) { btnOk.disabled = true; btnOk.textContent = '✓ Confirmar'; }
+  if (btnClr) { btnClr.textContent = '✕ Limpar'; }
 }
 
 // =====================================================
 // RESET
 // =====================================================
 function resetForm() {
-  if (!confirm('Deseja apagar todos os dados?')) return;
   var campos = ['fTecnico','fOS','fFiscal','carroNr','carroPlaca','carroModelo','obs-geral','ph-label'];
   for (var i = 0; i < campos.length; i++) {
     var el = document.getElementById(campos[i]);
@@ -1428,6 +1631,7 @@ function resetForm() {
 
   photos = [];
   updFotoUI();
+  sigLocked = [false, false];
   clearSig('sigInsp', 0);
   clearSig('sigOper', 1);
   updEpiStats();
@@ -1441,6 +1645,19 @@ function resetForm() {
 var _pdfMode = 'download'; // 'download' | 'share'
 var _pdfBlob = null;
 var _pdfFilename = '';
+
+function abrirInfoModal(nome, info) {
+  document.getElementById('infoModalNome').textContent = nome;
+  document.getElementById('infoModalTxt').textContent = info;
+  document.getElementById('infoModal').classList.add('show');
+}
+function fecharInfoModal() {
+  document.getElementById('infoModal').classList.remove('show');
+}
+// Fechar clicando fora
+document.getElementById('infoModal').addEventListener('click', function(e) {
+  if (e.target === this) fecharInfoModal();
+});
 
 function fecharModal() { document.getElementById('modalShare').classList.remove('show'); }
 function abrirModal()  { document.getElementById('modalShare').classList.add('show'); }
@@ -1596,33 +1813,53 @@ function _gerarPDF() {
 
     function pdfRow(y, item, alt, hasCond) {
       var pfx = item.pfx;
-      var rh = 8.5;
-      if (alt) { sf(GRAY); doc.rect(M, y, IW, rh, 'F'); }
-      sd(GBRD); doc.setLineWidth(0.1); doc.line(M, y + rh, M + IW, y + rh);
       var r = document.querySelector('input[name="' + pfx + '_' + item.id + '"]:checked');
       var obEl = document.getElementById(pfx + '_o_' + item.id);
-      var ob = obEl ? obEl.value : '';
+      var ob = obEl ? (obEl.value.trim() || '') : '';
+
+      // Calcula largura disponivel para obs e quebra o texto
+      var obsX, obsW;
+      if (hasCond) { obsX = M + 135; obsW = IW - 135 + M - 2; }
+      else          { obsX = M + 115; obsW = IW - 115 + M - 2; }
+
+      fn(7, 'normal');
+      var obsLines = ob ? doc.splitTextToSize(ob.toUpperCase(), obsW) : ['-'];
+      var rh = Math.max(8.5, obsLines.length * 4.5 + 4);
+
+      // Quebra de pagina antes de desenhar
+      if (y + rh > PH - 20) { y = newPage(); }
+
+      if (alt) { sf(GRAY); doc.rect(M, y, IW, rh, 'F'); }
+      sd(GBRD); doc.setLineWidth(0.1); doc.line(M, y + rh, M + IW, y + rh);
+
+      // Nome do item
       fn(8, 'bold'); st(NAVY);
-      doc.text(item.nome.substring(0, 36), M + 2, y + 5.8);
+      var nomeLines = doc.splitTextToSize(item.nome, 70);
+      var nomeRh = Math.max(rh, nomeLines.length * 4.5 + 4);
+      doc.text(nomeLines, M + 2, y + 5.5);
+
+      // SIM / NAO
       fn(8, 'bold');
       if (r) {
         if (r.value === 'Sim') { st(GREEN); doc.text('SIM', M + 75, y + 5.8); }
         else { st(RED); doc.text('NAO', M + 95, y + 5.8); }
       } else {
-        st(GTEXT); doc.text('-', M + 75, y + 5.8); doc.text('-', M + 95, y + 5.8);
+        st(GTEXT); doc.text('-', M + 80, y + 5.8);
       }
+
+      // Condicao (ferramentario)
       if (hasCond) {
         var cEl = document.getElementById(pfx + '_c_' + item.id);
         var cd = cEl ? cEl.value : '';
         var cc = { 'OTIMO': GREEN, 'BOM': BLUE, 'REGULAR': YEL, 'RUIM': RED, 'N/A': [150, 150, 150] };
         fn(7.5, 'bold'); st(cc[cd] || GTEXT);
-        doc.text(cd || '-', M + 110, y + 5.8);
-        fn(7, 'normal'); st(GTEXT);
-        doc.text((ob || '-').substring(0, 24), M + 135, y + 5.8);
-      } else {
-        fn(7, 'normal'); st(GTEXT);
-        doc.text((ob || '-').substring(0, 32), M + 115, y + 5.8);
+        doc.text(cd || '-', M + 112, y + 5.8);
       }
+
+      // Observacao — texto completo sem corte
+      fn(7, 'normal'); st(GTEXT);
+      doc.text(obsLines, obsX, y + 5.5);
+
       return y + rh;
     }
 
